@@ -27,10 +27,10 @@ func isPowerOfTwoMinusOne(n int) bool {
 }
 
 func getExponent(n int) int {
-    r := 0
+    e := 0
     for n > 1 {
         n >>= 1
-        r++
+        e++
     }
-    return r
+    return e
 }

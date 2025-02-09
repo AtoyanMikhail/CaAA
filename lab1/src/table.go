@@ -11,13 +11,13 @@ type Square struct {
 }
 
 type Table struct {
-	N             int
+	edge          int
 	matrix        [][]int
 	current       []Square
 	result        []Square
 	bestCount     int
 	currentCount  int
-	maxSquareSize int
+	maxSquareEdge int
 }
 
 type Result struct {
@@ -36,21 +36,21 @@ func (r Result) String() string {
 	return res
 }
 
-func New(n int) *Table {
+func New(edge int) *Table {
 	t := &Table{
-		N:             n,
+		edge:          edge,
 		bestCount:     math.MaxInt32,
-		maxSquareSize: n - 1,
+		maxSquareEdge: edge - 1,
 	}
-	t.matrix = make([][]int, n)
+	t.matrix = make([][]int, edge)
 	for i := range t.matrix {
-		t.matrix[i] = make([]int, n)
+		t.matrix[i] = make([]int, edge)
 	}
 	return t
 }
 
 func (t *Table) Place(x, y, size int) error {
-	if x+size > t.N || y+size > t.N {
+	if x+size > t.edge || y+size > t.edge {
 		return fmt.Errorf("Out of bounds placement")
 	}
 
@@ -71,7 +71,7 @@ func (t *Table) Place(x, y, size int) error {
 }
 
 func (t *Table) FindEmptyX(y int) int {
-	for x := 0; x < t.N; x++ {
+	for x := 0; x < t.edge; x++ {
 		if t.matrix[y][x] == 0 {
 			return x
 		}
@@ -88,7 +88,7 @@ func (t *Table) RemoveSquare(x, y, size int) {
 }
 
 func (t *Table) Backtrack(y int) {
-	if y >= t.N {
+	if y >= t.edge {
 		if t.currentCount < t.bestCount {
 			t.bestCount = t.currentCount
 			t.result = make([]Square, t.bestCount)
@@ -107,7 +107,7 @@ func (t *Table) Backtrack(y int) {
 		return
 	}
 
-	maxSize := min(t.maxSquareSize, t.N-x, t.N-y)
+	maxSize := min(t.maxSquareEdge, t.edge-x, t.edge-y)
 	for size := maxSize; size >= 1; size-- {
 		if err := t.Place(x, y, size); err == nil {
 			t.current = append(t.current, Square{x, y, size})
@@ -123,47 +123,47 @@ func (t *Table) Backtrack(y int) {
 }
 
 func (t *Table) Optimize() error {
-    if t.N%2 == 0 {
-        t.result = []Square{
-            {0, 0, t.N / 2},
-            {t.N / 2, 0, t.N / 2},
-            {0, t.N / 2, t.N / 2},
-            {t.N / 2, t.N / 2, t.N / 2},
-        }
-        t.bestCount = 4
-        return nil
-    }
+	if t.edge%2 == 0 {
+		t.result = []Square{
+			{0, 0, t.edge / 2},
+			{t.edge / 2, 0, t.edge / 2},
+			{0, t.edge / 2, t.edge / 2},
+			{t.edge / 2, t.edge / 2, t.edge / 2},
+		}
+		t.bestCount = 4
+		return nil
+	}
 
-    if isPowerOfTwoMinusOne(t.N) {
-        base := (t.N + 1) / 2    
+	if isPowerOfTwoMinusOne(t.edge) {
+		base := (t.edge + 1) / 2
 
-        t.result = []Square{
-            {0, 0, base},
-            {0, base, base - 1},
-            {base, 0, base - 1},
-        }
-        t.bestCount = 3
+		t.result = []Square{
+			{0, 0, base},
+			{0, base, base - 1},
+			{base, 0, base - 1},
+		}
+		t.bestCount = 3
 
-        squareSize := base / 2
-		indentation := squareSize 
-        for squareSize > 0 {
-            t.result = append(t.result,
-				Square{t.N - indentation, t.N - squareSize - indentation, squareSize},
-                Square{t.N - squareSize - indentation, t.N - indentation, squareSize},
-                Square{t.N - indentation, t.N - indentation, squareSize},
-            )
-            t.bestCount += 3
-            squareSize /= 2
+		squareSize := base / 2
+		indentation := squareSize
+		for squareSize > 0 {
+			t.result = append(t.result,
+				Square{t.edge - indentation, t.edge - squareSize - indentation, squareSize},
+				Square{t.edge - squareSize - indentation, t.edge - indentation, squareSize},
+				Square{t.edge - indentation, t.edge - indentation, squareSize},
+			)
+			t.bestCount += 3
+			squareSize /= 2
 			indentation += squareSize
-        }
+		}
 
-        return nil
-    }
+		return nil
+	}
 
-    return fmt.Errorf("Could not optimize calculations")
+	return fmt.Errorf("Could not optimize calculations")
 }
 
-func (t *Table) Solve() Result {
+func (t *Table) FindSquares() Result {
 	if err := t.Optimize(); err == nil {
 		result := Result{
 			Count:   t.bestCount,
@@ -173,8 +173,8 @@ func (t *Table) Solve() Result {
 		return result
 	}
 
-	if isPrime(t.N) {
-		base := (t.N + 1) / 2
+	if isPrime(t.edge) {
+		base := (t.edge + 1) / 2
 		t.Place(0, 0, base)
 		t.Place(0, base, base-1)
 		t.Place(base, 0, base-1)
@@ -184,7 +184,7 @@ func (t *Table) Solve() Result {
 			{base, 0, base - 1},
 		}
 		t.currentCount = 3
-		t.maxSquareSize = base - 1
+		t.maxSquareEdge = base - 1
 	}
 
 	t.Backtrack(0)
