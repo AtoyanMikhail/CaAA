@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math"
-	"time"
 )
 
 type Square struct {
@@ -21,9 +20,8 @@ type Table struct {
 }
 
 type Result struct {
-	Count     int
-	Squares   []Square
-	TimeTaken time.Time
+	Count   int
+	Squares []Square
 }
 
 func (r Result) String() string {
