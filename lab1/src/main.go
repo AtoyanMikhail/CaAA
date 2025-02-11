@@ -13,7 +13,7 @@ func main() {
 	}
 
 	t := New(n)
-	r := t.FindSquares()
+	r := t.PlaceSquares()
 
 	fmt.Print(r)
 }

@@ -19,7 +19,7 @@ func BenchmarkSolve(b *testing.B) {
 			t := New(tc.size)
 			b.StartTimer()
 
-			t.FindSquares()
+			t.PlaceSquares()
 		})
 	}
 }
