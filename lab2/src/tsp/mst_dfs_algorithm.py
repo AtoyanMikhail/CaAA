@@ -8,12 +8,10 @@ class ApproximateTSP:
         self.start = start_city
 
     def find_mst(self):
-        # Алгоритм Прима для построения MST
-        mst = []  # Список рёбер MST
+        mst = []  # Список рёбер
         visited = set()
         heap = []  # Куча для выбора рёбер
 
-        # Начинаем с начальной вершины
         visited.add(self.start)
         for next_city in range(self.n):
             if next_city != self.start and self.matrix[self.start][next_city] != inf:
@@ -30,7 +28,6 @@ class ApproximateTSP:
         return mst
 
     def dfs_traversal(self, mst):
-        # Обход MST в глубину (DFS)
         adjacency_list = {i: [] for i in range(self.n)}
         for u, v in mst:
             adjacency_list[u].append(v)
@@ -51,16 +48,12 @@ class ApproximateTSP:
         return path
 
     def solve(self):
-        # Шаг 1: Построение MST
         mst = self.find_mst()
 
-        # Шаг 2: Обход MST
         path = self.dfs_traversal(mst)
 
-        # Шаг 3: Добавление возврата в стартовую вершину
         path.append(self.start)
 
-        # Шаг 4: Вычисление стоимости
         cost = 0
         for i in range(len(path) - 1):
             cost += self.matrix[path[i]][path[i + 1]]

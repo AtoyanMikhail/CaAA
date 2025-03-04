@@ -7,12 +7,6 @@ matrix = reader.read_matrix()
 
 start_city = 0
 
-solver = ApproximateTSP(matrix, start_city)
-path, cost = solver.solve()
-
-print(f"Приближённый путь: {path}")
-print(f"Стоимость: {cost}")
-
 if matrix:
     start_vertex = 0
 
