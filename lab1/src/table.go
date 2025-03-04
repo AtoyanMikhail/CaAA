@@ -14,7 +14,7 @@ type Table struct {
 	maxSquareEdge int
 }
 
-func New(edge int) *Table {
+func NewTable(edge int) *Table {
 	t := &Table{
 		edgeLength:    edge,
 		bestCount:     math.MaxInt32,
@@ -67,6 +67,10 @@ func (t *Table) popSquare() error {
 }
 
 func (t *Table) backtrack(y int) {
+	if t.currentCount >= t.bestCount {
+		return
+	}
+
 	if y >= t.edgeLength {
 		if t.currentCount < t.bestCount {
 			t.bestCount = t.currentCount
@@ -80,10 +84,6 @@ func (t *Table) backtrack(y int) {
 
 	if x == -1 {
 		t.backtrack(y + 1)
-		return
-	}
-
-	if t.currentCount >= t.bestCount {
 		return
 	}
 

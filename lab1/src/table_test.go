@@ -16,7 +16,7 @@ func BenchmarkSolve(b *testing.B) {
 	for _, tc := range testCases {
 		b.Run(fmt.Sprintf("Size:%d", tc.size), func(b *testing.B) {
 			b.StopTimer()
-			t := New(tc.size)
+			t := NewTable(tc.size)
 			b.StartTimer()
 
 			t.PlaceSquares()
