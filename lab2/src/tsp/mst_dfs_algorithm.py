@@ -45,6 +45,7 @@ class ApproximateTSP:
                 for neighbor in reversed(adjacency_list[node]):
                     if neighbor not in visited:
                         stack.append(neighbor)
+                        
         return path
 
     def solve(self):
