@@ -27,7 +27,6 @@ def search(needle, haystack):
         if j == 0:      #Код для визуализации
             start = i   #
         
-        
         while j > 0 and haystack[i] != needle[j]:
             j = pi[j-1]
         if haystack[i] == needle[j]:
@@ -39,7 +38,7 @@ def search(needle, haystack):
         
         os.system("clear")                                                          #Код для визуализации
         print(haystack)                                                             #
-        print(" "*(i-j+1)+ (haystack[start:start + j] if j != 0 else "_"))          #
+        print(" "*(i-j+1) + (haystack[start:start + j] if j != 0 else "_"))         #
         for o in reversed(occurrences):                                             #
             print(" "*(o) + needle + "\n" + " "*(o) + "^" + "\n" + " "*(o) + str(o))#
         time.sleep(1)                                                               #
