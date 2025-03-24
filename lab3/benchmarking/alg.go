@@ -1,9 +1,5 @@
 package benchmarking
 
-import (
-	"fmt"
-)
-
 func min(a, b, c int) int {
 	if a < b {
 		if a < c {
@@ -51,13 +47,4 @@ func levenshteinDistance(s, t []rune) int {
 	}
 
 	return dp[m][n]
-}
-
-func main() {
-	var s1, s2 string
-	fmt.Scanf("%s", &s1)
-	fmt.Scanf("%s", &s2)
-
-	distance := levenshteinDistance([]rune(s1), []rune(s2))
-	fmt.Println(distance)
 }
