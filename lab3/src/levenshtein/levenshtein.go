@@ -1,5 +1,12 @@
 package levenshtein
 
+type Config struct {
+	SpecialInsertionCharacter   rune
+	SpecialInsertionCost        int
+	SpecialReplacementCharacter rune
+	SpecialReplacementCost      int
+}
+
 type Operation int
 
 const (
@@ -27,7 +34,27 @@ func min(a, b, c int) (int, Operation) {
 	return minVal, op
 }
 
-func LevenshteinDistance(s, t []rune) int {
+func calculateCosts(dp [][]int, i, j int, sChar, tChar rune, cfg Config) (int, Operation) {
+	replaceCost := dp[i-1][j-1]
+	if sChar == cfg.SpecialReplacementCharacter {
+		replaceCost += cfg.SpecialReplacementCost
+	} else if sChar != tChar {
+		replaceCost += 1
+	}
+
+	insertCost := dp[i][j-1]
+	if tChar == cfg.SpecialInsertionCharacter {
+		insertCost += cfg.SpecialInsertionCost
+	} else {
+		insertCost += 1
+	}
+
+	deleteCost := dp[i-1][j] + 1
+
+	return min(replaceCost, insertCost, deleteCost)
+}
+
+func LevenshteinDistance(s, t []rune, cfg Config) int {
 	m, n := len(s), len(t)
 	dp := make([][]int, m+1)
 	ops := make([][]Operation, m+1)
@@ -55,11 +82,8 @@ func LevenshteinDistance(s, t []rune) int {
 				dp[i][j] = dp[i-1][j-1]
 				ops[i][j] = Match
 			} else {
-				val, op := min(
-					dp[i-1][j-1]+1, // Replacement
-					dp[i][j-1]+1,   // Insertion
-					dp[i-1][j]+1,   // Deletion
-				)
+				val, op := calculateCosts(dp, i, j, s[i-1], t[j-1], cfg)
+
 				dp[i][j] = val
 				ops[i][j] = op
 				printTable(dp, s, t, i, j)
